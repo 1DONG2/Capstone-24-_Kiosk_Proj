@@ -1,4 +1,4 @@
-<code>echo "# asdfasdf" >> README.md
+<code>echo "# Capstone-24-_Kiosk_Proj" >> README.md
 git init
 git add README.md
 git commit -m "first commit"
