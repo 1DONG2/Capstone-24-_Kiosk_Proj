@@ -1,3 +1,12 @@
+<code>echo "# asdfasdf" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/1DONG2/Capstone-24-_Kiosk_Proj.git
+git push -u origin main
+</code>
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
