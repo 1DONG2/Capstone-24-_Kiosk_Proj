@@ -1,10 +1,6 @@
-<code>echo "# Capstone-24-_Kiosk_Proj" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/1DONG2/Capstone-24-_Kiosk_Proj.git
-git push -u origin main
+## 레포지토리 다운로드
+다운로드할 폴더 터미널에서 
+<code>git clone https://github.com/1DONG2/Capstone-24-_Kiosk_Proj.git
 </code>
 
 # Getting Started with Create React App
