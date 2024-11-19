@@ -1,3 +1,8 @@
+## 레포지토리 다운로드
+다운로드할 폴더 터미널에서 
+<code>git clone https://github.com/1DONG2/Capstone-24-_Kiosk_Proj.git
+</code>
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
