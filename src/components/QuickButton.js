@@ -22,6 +22,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+const displaytext = {"A": "α", "B": "β", "C": "γ"}
+
 function QuickButton({ open, func, text }) {
   const [dial, setDial] = React.useState(false);
   const winsize = window.innerWidth + window.innerHeight;
@@ -37,6 +39,7 @@ function QuickButton({ open, func, text }) {
 
   const isWideScreen = winsize > 1500;
   const isOpen = open[text];
+  const dt = displaytext[text]
 
   return (
     <List className="QB">
@@ -54,14 +57,14 @@ function QuickButton({ open, func, text }) {
         }}
       >
         <div onClick={isOpen ? () => func(open, text) : null} className="btn">
-          {text}
+          {dt}
         </div>
         {isOpen ? (
           <ExpandLess sx={{ width: '100%' }} onClick={isOpen ? () => func(open, text) : null} />
         ) : (
           <ExpandMore onClick={isOpen ? () => func(open, text) : null} />
         )}
-        <div className="heightttt" style={{ height: isOpen ? 0 : '20%' }} />
+        <div className="heightttt" style={{ height: isOpen ? 0 : '26%' }} />
         <Collapse
           className="collapse"
           sx={{ overflow: 'auto' }}

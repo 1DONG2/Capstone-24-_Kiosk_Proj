@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { dummy } from './test/example.js';
 import QuickButton from './components/QuickButton';
+import MyPage from './components/MyPage';
+import Loginform from './components/Login';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -10,11 +13,20 @@ import './App.css';
 const state = { "A": false, "B": false, "C": false };
 
 function App() {
+  const [user, setUser] = useState(null);
   const [open, setOpen] = useState(state);
+  const [dailOpen, setDailOpen] = useState(false);
+  const [myPageOpen, setMyPageOpen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const isWideScreen = windowSize.width+windowSize.height > 1500;
 
   useEffect(() => {
+
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+        setUser(JSON.parse(storedUser));
+    }
+
     const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
@@ -23,7 +35,35 @@ function App() {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    // 스크롤 체크 함수
+    function checkScrollPosition() {
+      const scrollTop = window.scrollY; // 현재 스크롤 위치
+      const windowHeight = window.innerHeight; // 화면 높이
+      const documentHeight = document.documentElement.scrollHeight; // 문서 전체 높이
+
+      if (!dailOpen && scrollTop + windowHeight >= documentHeight - 300) {
+        // 아래로 스크롤 끝에 도달
+        window.scrollTo({
+          top: 250,
+          behavior: 'smooth',
+        });
+      } else if (!dailOpen && scrollTop <= 200) {
+        // 위로 스크롤
+        window.scrollTo({
+          top: 250,
+          behavior: 'smooth',
+        });
+      }
+    }
+    // 이벤트 리스너 등록
+    window.addEventListener('scroll', checkScrollPosition);
+  
+    // 정리 함수: 컴포넌트 언마운트 시 리스너 제거
+    return () => {
+      window.removeEventListener('scroll', checkScrollPosition);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const btnclick = function (open, txt) {
@@ -40,6 +80,62 @@ function App() {
 
   const currentButton = isWideScreen ? 'B' : 'C';
 
+  async function loginfunc(id) {
+    const fetchData = async () => {
+        const time = new Date().toISOString();
+
+        // IP 가져오기
+        const ipResponse = await fetch("https://api.ipify.org?format=json");
+        const ipData = await ipResponse.json();
+
+        // 위치 가져오기
+        const getLocation = () =>
+            new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            resolve({
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                            });
+                        },
+                        (error) => {
+                            reject(error);
+                        }
+                    );
+                } else {
+                    reject("Geolocation not supported");
+                }
+            });
+
+        try {
+            const location = await getLocation();
+            return { time, ip: ipData.ip, location };
+        } catch (error) {
+            console.error("Error getting location:", error);
+            return { time, ip: ipData.ip, location: { latitude: null, longitude: null } };
+        }
+    };
+
+    try {
+        // 사용자 데이터 생성
+        const userData = await fetchData().then((data) => ({ id, ...data }));
+
+        // 상태 업데이트 및 세션 스토리지 저장
+        setUser(userData);
+        sessionStorage.setItem("user", JSON.stringify(userData));
+
+        console.log("Login successful:", userData);
+    } catch (error) {
+        console.error("Login failed:", error);
+    }
+  };
+
+  const logoutfunc = () => {
+    setUser(null);
+    sessionStorage.removeItem("user");
+  };
+
   return (
     <div className="App">
       <div className='bar'>
@@ -48,6 +144,21 @@ function App() {
           <p className='title'>스터디룸 대여</p>
         </div>
         <hr />
+        <div className='login'>
+          <Button
+            sx={{
+              fontSize: isWideScreen ? 28 : 14,
+              color: 'white',
+              borderColor: 'white',
+            }}
+            variant="outlined" 
+            onClick={user ? ()=>setMyPageOpen(true) : () => setDailOpen(true)}>
+            {user ? dummy.account[user.id].name+'님' : 'Log in' }
+            {/* 이름부분 */}
+          </Button>
+          <Loginform loginfunc={loginfunc} setDailOpen={setDailOpen} dailOpen={dailOpen}/>
+          <MyPage user={user} logoutfunc={logoutfunc} setMyPageOpen={setMyPageOpen} myPageOpen={myPageOpen}/>
+        </div>
       </div>
       <div className='btns'>
         <QuickButton open={open} func={btnclick} text="A" />
@@ -57,36 +168,32 @@ function App() {
         <QuickButton open={open} func={btnclick} text="C" />
       </div>
 
-      <div
-        style={open[currentButton] ? { transform: 'translateY(40px)' } : null}
-        className='tablebtn'>
-        <Button sx={{
-          fontSize: isWideScreen ? 28 : 16,
-          padding: isWideScreen ? '14px' : '10px',
-          paddingLeft: isWideScreen ? '28px' : '20px',
-          paddingRight: isWideScreen ? '28px' : '20px',
-          borderRadius: '35px',
-          bgcolor: '#ffffff',
-          fontWeight: '600',
-          color: '#42464f',
-          left: isWideScreen ? 114 : 68,
-          bottom: isWideScreen ? 30 : 0
-        }}
-          variant="contained" endIcon={<ArrowForwardIosIcon />}>
-          예약시간표
-        </Button>
-      </div>
-
-      <div
-        style={open[currentButton] ? { transform: 'translateY(40px)' } : null}
-        className='help'>
-        <IconButton aria-label="Example">
-          <HelpIcon sx={{
+      <div className='fixbox'
+        style={(open[currentButton]) ? { transform: 'translateY(45px)' } : null}>
+        <div
+          className='tablebtn'>
+          <Button sx={{
+            fontSize: isWideScreen ? 28 : 16,
             borderRadius: '35px',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            fontSize: isWideScreen ? 70 : 50
-          }} />
-        </IconButton>
+            bgcolor: '#ffffff',
+            fontWeight: '600',
+            color: '#42464f',
+          }}
+            variant="contained" endIcon={<ArrowForwardIosIcon />}>
+            예약시간표
+          </Button>
+        </div>
+
+        <div
+          className='help'>
+          <IconButton aria-label="Example">
+            <HelpIcon sx={{
+              borderRadius: '35px',
+              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+              fontSize: isWideScreen ? 70 : 50
+            }} />
+          </IconButton>
+        </div>
       </div>
     </div>
   );

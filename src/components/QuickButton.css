@@ -34,7 +34,8 @@
 
   @media (max-aspect-ratio: 1/1) {
     .btn {
-        font-size:30px
+        font-size:30px;
+        transition: height 1s ease;
     }
     .QB {
         width: 100%;
@@ -45,6 +46,7 @@
         max-height: 40vh;
     }
     .heightttt{
-        height: 0px !important;;
+        height: 0px !important;
+        transition: height 1s ease;
     }
-    }
+  }
