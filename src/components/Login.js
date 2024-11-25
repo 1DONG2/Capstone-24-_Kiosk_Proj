@@ -55,7 +55,6 @@ function Loginform({loginfunc, setDailOpen, dailOpen}) {
 
   return (
     <React.Fragment>
-      {console.log(dailOpen)}
       <Dialog
         fullWidth
         maxWidth={'sm'}

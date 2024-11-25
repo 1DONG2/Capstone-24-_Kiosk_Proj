@@ -56,7 +56,6 @@ function MyPage({user, logoutfunc, setMyPageOpen, myPageOpen}) {
 
   return (
     <React.Fragment>
-      {console.log(myPageOpen)}
       <Dialog
         fullWidth
         maxWidth={'sm'}

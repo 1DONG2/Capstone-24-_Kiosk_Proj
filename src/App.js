@@ -4,6 +4,11 @@ import { dummy } from './test/example.js';
 import QuickButton from './components/QuickButton';
 import MyPage from './components/MyPage';
 import Loginform from './components/Login';
+import TablePage from './components/TablePage.js';
+import { db } from './test/firebase';
+
+import { doc, getDoc } from 'firebase/firestore';
+
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -17,10 +22,26 @@ function App() {
   const [open, setOpen] = useState(state);
   const [dailOpen, setDailOpen] = useState(false);
   const [myPageOpen, setMyPageOpen] = useState(false);
+  const [tablePageOpen, setTablePageOpen] = React.useState(false);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const isWideScreen = windowSize.width+windowSize.height > 1500;
+  const [test, setTest] = useState("")
 
-  useEffect(() => {
+  // async - await로 데이터 fetch 대기
+  async function getTest() {
+    // document에 대한 참조 생성
+    const docRef = doc(db, "test", "test1");
+    // 참조에 대한 Snapshot 쿼리
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      setTest(docSnap.data());
+      console.log(test.test);
+    }
+  };
+
+  useEffect(() => { 
+    getTest()
 
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
@@ -90,28 +111,29 @@ function App() {
         const ipResponse = await fetch("https://api.ipify.org?format=json");
         const ipData = await ipResponse.json();
 
-        // 위치 가져오기
-        const getLocation = () =>
-            new Promise((resolve, reject) => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            resolve({
-                                latitude: position.coords.latitude,
-                                longitude: position.coords.longitude,
-                            });
-                        },
-                        (error) => {
-                            reject(error);
-                        }
-                    );
-                } else {
-                    reject("Geolocation not supported");
-                }
-            });
+        // // 위치 가져오기
+        // const getLocation = () =>
+        //     new Promise((resolve, reject) => {
+        //         if (navigator.geolocation) {
+        //             navigator.geolocation.getCurrentPosition(
+        //                 (position) => {
+        //                     resolve({
+        //                         latitude: position.coords.latitude,
+        //                         longitude: position.coords.longitude,
+        //                     });
+        //                 },
+        //                 (error) => {
+        //                     reject(error);
+        //                 }
+        //             );
+        //         } else {
+        //             reject("Geolocation not supported");
+        //         }
+        //     });
 
         try {
-            const location = await getLocation();
+            // const location = await getLocation();
+            const location = 'test';
             return { time, ip: ipData.ip, location };
         } catch (error) {
             console.error("Error getting location:", error);
@@ -143,7 +165,7 @@ function App() {
       <div className='bar'>
         <div className='bar_'>
           <p className='title'>디지털정보관</p>
-          <p className='title'>스터디룸 대여</p>
+          <p className='title'> {"스터디룸 대여"+ test.test}</p>
         </div>
         <hr />
         <div className='login'>
@@ -181,10 +203,12 @@ function App() {
             fontWeight: '600',
             color: '#42464f',
           }}
-            variant="contained" endIcon={<ArrowForwardIosIcon />}>
+            variant="contained" endIcon={<ArrowForwardIosIcon />}
+            onClick={()=>setTablePageOpen(true)}>
             예약시간표
           </Button>
         </div>
+        <TablePage user={user} setTablePageOpen={setTablePageOpen} tablePageOpen={tablePageOpen}/>
 
         <div
           className='help'>
