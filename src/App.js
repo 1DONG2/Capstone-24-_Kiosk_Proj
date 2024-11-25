@@ -64,11 +64,13 @@ function App() {
       window.removeEventListener('scroll', checkScrollPosition);
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [dailOpen]);
+
+  const sum_open = Object.values(open).reduce((acc, value) => acc + value, 0);
 
   const btnclick = function (open, txt) {
     const newOpen = { ...open };
-    if (!Object.values(newOpen).reduce((acc, value) => acc + value, 0)) {
+    if (!sum_open) {
       newOpen[txt] = true;
     } else {
       Object.keys(newOpen).forEach(key => {
@@ -78,7 +80,7 @@ function App() {
     setOpen(newOpen);
   };
 
-  const currentButton = isWideScreen ? 'B' : 'C';
+  const currentButton = isWideScreen ? open['B'] : sum_open;
 
   async function loginfunc(id) {
     const fetchData = async () => {
@@ -169,7 +171,7 @@ function App() {
       </div>
 
       <div className='fixbox'
-        style={(open[currentButton]) ? { transform: 'translateY(45px)' } : null}>
+        style={(currentButton) ? { transform: 'translateY(65px)' } : null}>
         <div
           className='tablebtn'>
           <Button sx={{

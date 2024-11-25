@@ -55,7 +55,7 @@ hr {
 .line {
   width: 1px; /* 세로줄 */
   height: 95%; /* 화면 높이 */
-  background-color: #42464f; /* 줄 색상 */
+  background-color: #b3b7bf; /* 줄 색상 */
 }
 
 .fixbox{
@@ -122,7 +122,7 @@ hr {
   }
   .line {
     width: 95%;
-    height: 3px;
+    height: 4px;
   }
   .help {
     right: 30px;
