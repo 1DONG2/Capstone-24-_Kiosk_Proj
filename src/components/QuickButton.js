@@ -1,6 +1,10 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { dummy } from '../test/example.js';
 import './QuickButton.css';
+
+import { db } from '../test/firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
@@ -23,18 +27,67 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 const displaytext = {"A": "α", "B": "β", "C": "γ"}
+const docRef = doc(db, "test", "open");  // test 컬렉션의 open 문서 참조
 
 function QuickButton({ open, func, text }) {
-  const [dial, setDial] = React.useState(false);
+  const [dial, setDial] = useState(false);
+  const [dial2, setDial2] = useState(false);
+  const [lock, setLock] = useState(false);
   const winsize = window.innerWidth + window.innerHeight;
+
+  async function getLock() {
+    // document에 대한 참조 생성
+    // 참조에 대한 Snapshot 쿼리
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      setLock(docSnap.data()[text]);
+      console.log(docSnap.data());
+    }
+  };
+
+  useEffect(() => { 
+    getLock();
+  },[]);
 
   const handleClickOpen = () => setDial(true);
   const handleClose = () => setDial(false);
+  const handleClickOpen2 = () => setDial2(true);
+  const handleClose2 = () => setDial2(false);
+
+  const updateDocument_room = async () => {
+    try {
+      await updateDoc(docRef, {
+        [text]: !lock,  // a 필드를 새 값으로 업데이트
+      });
+      console.log("문서가 성공적으로 수정되었습니다!");
+    } catch (error) {
+      console.error("문서 수정 오류: ", error);
+    }
+    getLock();
+  };
+  const updateDocument_reqeust = async function(req) {
+    try {
+      await updateDoc(docRef, {request : req});
+      console.log("문서가 성공적으로 수정되었습니다!");
+    } catch (error) {
+      console.error("문서 수정 오류: ", error);
+    }
+    getLock();
+  };
 
   const unlock = () => {
-    dummy.empty[text] = !dummy.empty[text];
+    updateDocument_reqeust(text)
     // dummy.empty[text] = false // test
     setDial(false);
+    handleClickOpen2()
+  };
+  const request = () => {
+    updateDocument_room();
+    updateDocument_reqeust("");
+    // dummy.empty[text] = false // test
+    setDial2(false);
+    console.log('dddd')
   };
 
   const isWideScreen = winsize > 1500;
@@ -115,15 +168,15 @@ function QuickButton({ open, func, text }) {
         <IconButton 
         // disabled={dummy.empty[text]} //test
         aria-label="Example" onClick={handleClickOpen}>
-          {dummy.empty[text] ? (
-            <LockOutlinedIcon
-              fontSize={isWideScreen ? 'large' : 'medium'}
-              sx={{ color: '#e91e63' }}
-            />
-          ) : (
+          {lock ? (
             <LockOpenOutlinedIcon
               fontSize={isWideScreen ? 'large' : 'medium'}
               sx={{ color: '#9dd52d' }}
+            />
+          ) : (
+            <LockOutlinedIcon
+              fontSize={isWideScreen ? 'large' : 'medium'}
+              sx={{ color: '#e91e63' }}
             />
           )}
         </IconButton>
@@ -132,13 +185,26 @@ function QuickButton({ open, func, text }) {
         <DialogTitle id="alert-dialog-title">{"테스트용"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            테스트용 잠겨있을땐 터치 비활성화할 예정
-            Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
+            스터디룸 {text}를 잠금해제하시겠습니까?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
           <Button onClick={unlock} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={dial2} onClose={handleClose2} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">{"테스트용"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            키 가져갔으면 확인
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose2}>Disagree</Button>
+          <Button onClick={request} autoFocus>
             Agree
           </Button>
         </DialogActions>

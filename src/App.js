@@ -30,7 +30,7 @@ function App() {
   // async - await로 데이터 fetch 대기
   async function getTest() {
     // document에 대한 참조 생성
-    const docRef = doc(db, "test", "test1");
+    const docRef = doc(db, "test", "test");
     // 참조에 대한 Snapshot 쿼리
     const docSnap = await getDoc(docRef);
 
@@ -165,7 +165,7 @@ function App() {
       <div className='bar'>
         <div className='bar_'>
           <p className='title'>디지털정보관</p>
-          <p className='title'> {"스터디룸 대여"+ test.test}</p>
+          <p className='title'> 스터디룸 대여</p>
         </div>
         <hr />
         <div className='login'>

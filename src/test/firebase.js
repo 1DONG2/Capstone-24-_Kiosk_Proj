@@ -14,6 +14,13 @@ const firebaseConfig = {
   messagingSenderId: "751081462494",
   appId: "1:751081462494:web:fbb4aaa1d038d9576d804f",
   measurementId: "G-CTYW9PW9YM"
+  // apiKey: "AIzaSyCiH0NxNed7E7tvGAb0dBbUS_ZsJDqGzPk",
+  // authDomain: "capstone-design-99838.firebaseapp.com",
+  // projectId: "capstone-design-99838",
+  // storageBucket: "capstone-design-99838.firebasestorage.app",
+  // messagingSenderId: "427602664188",
+  // appId: "1:427602664188:web:2712bff175f0472de2d579",
+  // measurementId: "G-WCN4X0P7FP"
 };
 
 // Initialize Firebase
