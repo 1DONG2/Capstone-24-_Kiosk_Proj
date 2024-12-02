@@ -1,0 +1,52 @@
+.QB {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 33.33%;
+    height: 95%;
+  }
+  
+  .icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+  
+  .btn {
+    font-size:40px;
+    color: #42464f;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .collapse {
+    width: 97%;
+    max-height: 50vh;
+  }
+  
+  .test {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+
+  @media (max-aspect-ratio: 1/1) {
+    .btn {
+        font-size:30px;
+        transition: height 1s ease;
+    }
+    .QB {
+        width: 100%;
+        /* height: 30%; */
+        margin-bottom: 0;
+    }
+    .collapse {
+        max-height: 40vh;
+    }
+    .heightttt{
+        height: 0px !important;
+        transition: height 1s ease;
+    }
+  }
