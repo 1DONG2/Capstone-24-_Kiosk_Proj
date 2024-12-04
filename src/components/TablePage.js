@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { dummy } from '../test/example.js';
+// import { dummy } from '../test/example.js';
 // import './Login.css';
 import { db } from '../test/firebase';
-import { doc, getDoc, updateDoc, collection } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
@@ -14,10 +14,10 @@ import Slide from '@mui/material/Slide';
 
 import Grid from '@mui/material/Grid2';
 import { Box, Typography, Button, ButtonGroup } from '@mui/material';
-import { Widgets } from '@mui/icons-material';
 
 const docRef = doc(db, "test", "room");
 
+const roomName = {'A': '알파', 'B': '베타', 'C': '감마'};
 const roomState = {0: '예약 가능', 1: '예약중', 2: '예약 불가'};
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -32,7 +32,6 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
     const docSnap = await getDoc(docRef);
 
     setTimetable(docSnap.data());
-    console.log(docSnap.data());
   };
   
   useEffect(() => { 
@@ -84,9 +83,9 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
             <Button onClick={() => handleDayChange('day3')}>Day 3</Button>
           </ButtonGroup>
 
-          <Grid container spacing={2}>
+          <Grid container spacing={0.5}>
             {/* 시간 열 */}
-            <Grid item xs={3}>
+            <Grid  xs={1}>
               <Typography variant="h6" align="center">
                 시간
               </Typography>
@@ -99,15 +98,15 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
 
             {/* 그룹별 상태 열 */}
             {Object.entries(timetable).sort(([keyA], [keyB]) => keyA.localeCompare(keyB)).map(([key, days]) => (
-              <Grid item xs={3} key={key}>
+              <Grid  xs={2} key={key}>
                 <Typography variant="h6" align="center">
-                  {key.toUpperCase()}
+                  {roomName[key]}
                 </Typography>
                 {days.Reserve[selectedDay].map((status, index) => (
                   <Box
                     key={index}
                     sx={{
-                      width: '65px',
+                      // width: '15vw',
                       padding: 1,
                       borderBottom: '1px solid #ddd',
                       backgroundColor:
@@ -124,7 +123,7 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
                           : '#856404'
                     }}
                   >
-                    <Typography align="center">{status}</Typography>
+                    <Typography align="center">{roomState[status]}</Typography>
                   </Box>
                 ))}
               </Grid>

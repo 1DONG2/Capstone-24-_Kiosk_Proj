@@ -5,6 +5,7 @@ import QuickButton from './components/QuickButton';
 import MyPage from './components/MyPage';
 import Loginform from './components/Login';
 import TablePage from './components/TablePage.js';
+import ReservationPage from './components/Reservation.js';
 import { db } from './test/firebase';
 
 import { doc, getDoc } from 'firebase/firestore';
@@ -22,7 +23,8 @@ function App() {
   const [open, setOpen] = useState(state);
   const [dailOpen, setDailOpen] = useState(false);
   const [myPageOpen, setMyPageOpen] = useState(false);
-  const [tablePageOpen, setTablePageOpen] = React.useState(false);
+  const [tablePageOpen, setTablePageOpen] = useState(false);
+  const [reserveOpen, setReserveOpen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const isWideScreen = windowSize.width+windowSize.height > 1500;
   const [test, setTest] = useState("")
@@ -66,14 +68,14 @@ function App() {
       if (!dailOpen && scrollTop + windowHeight >= documentHeight - 300) {
         // 아래로 스크롤 끝에 도달
         window.scrollTo({
-          top: 250,
-          behavior: 'smooth',
+          top: (windowHeight < 500) ? 5 : 250,
+          behavior: (windowHeight < 500) ? 'auto' : 'smooth',
         });
       } else if (!dailOpen && scrollTop <= 200) {
         // 위로 스크롤
         window.scrollTo({
-          top: 250,
-          behavior: 'smooth',
+          top: (windowHeight < 500) ? 5 : 250,
+          behavior: (windowHeight < 500) ? 'auto' : 'smooth',
         });
       }
     }
@@ -185,11 +187,11 @@ function App() {
         </div>
       </div>
       <div className='btns'>
-        <QuickButton open={open} func={btnclick} text="A" />
+        <QuickButton user={user} open={open} func={btnclick} text="A" setReserveOpen={setReserveOpen}/>
         <div className="line" />
-        <QuickButton open={open} func={btnclick} text="B" />
+        <QuickButton user={user} open={open} func={btnclick} text="B" setReserveOpen={setReserveOpen}/>
         <div className="line" />
-        <QuickButton open={open} func={btnclick} text="C" />
+        <QuickButton user={user} open={open} func={btnclick} text="C" setReserveOpen={setReserveOpen}/>
       </div>
 
       <div className='fixbox'
@@ -208,7 +210,7 @@ function App() {
             예약시간표
           </Button>
         </div>
-        <TablePage user={user} setTablePageOpen={setTablePageOpen} tablePageOpen={tablePageOpen}/>
+        <TablePage user={user} setTablePageOpen={setTablePageOpen} tablePageOpen={tablePageOpen} setReserveOpen={setReserveOpen}/>
 
         <div
           className='help'>
@@ -221,6 +223,7 @@ function App() {
           </IconButton>
         </div>
       </div>
+      <ReservationPage user={user} setReserveOpen={setReserveOpen} reserveOpen={reserveOpen}/>
     </div>
   );
 }

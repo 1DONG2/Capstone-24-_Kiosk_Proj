@@ -89,6 +89,14 @@ hr {
   top: 8.5vh;
 }
 
+@media (max-height: 600px) {
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 150%;
+    overflow:scroll;
+  }
+}
 
 @media (max-aspect-ratio: 1/1) {
   html, body {
