@@ -24,7 +24,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function TablePage({user, setTablePageOpen, tablePageOpen}) {
+function TablePage({user, setTablePageOpen, tablePageOpen, setReserveOpen}) {
   const [selectedDay, setSelectedDay] = useState('day1'); // 초기 선택된 날짜는 'day1'
   const [timetable, setTimetable] = useState(''); // 초기 선택된 날짜는 'day1'
 
@@ -59,7 +59,7 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: 'relative', bgcolor: '#092979' }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -75,12 +75,12 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
         </AppBar>
         
         <Box sx={{ flexGrow: 1, padding: 1, display: 'flex', 
-          flexDirection:'column', alignItems: 'center'}}>
+          flexDirection:'column', alignItems: 'center', bgcolor: '#ebedf0'}}>
           {/* 버튼 그룹 */}
-          <ButtonGroup variant="contained" sx={{ marginBottom: 2 }}>
-            <Button onClick={() => handleDayChange('day1')}>Day 1</Button>
-            <Button onClick={() => handleDayChange('day2')}>Day 2</Button>
-            <Button onClick={() => handleDayChange('day3')}>Day 3</Button>
+          <ButtonGroup variant="contained" sx={{ marginBottom: 2}}>
+            <Button sx={{ bgcolor: '#092979' }} onClick={() => handleDayChange('day1')}>Day 1</Button>
+            <Button sx={{ bgcolor: '#092979' }} onClick={() => handleDayChange('day2')}>Day 2</Button>
+            <Button sx={{ bgcolor: '#092979' }} onClick={() => handleDayChange('day3')}>Day 3</Button>
           </ButtonGroup>
 
           <Grid container spacing={0.5}>
@@ -105,22 +105,21 @@ function TablePage({user, setTablePageOpen, tablePageOpen}) {
                 {days.Reserve[selectedDay].map((status, index) => (
                   <Box
                     key={index}
+                    onClick={()=>setReserveOpen(true)}
                     sx={{
                       // width: '15vw',
                       padding: 1,
                       borderBottom: '1px solid #ddd',
                       backgroundColor:
                         status === 0
-                          ? '#d4edda'
-                          : status === 2
-                          ? '#f8d7da'
-                          : '#fff3cd',
+                          ? 'white'
+                          : '#e4ebfd',
                       color:
                         status === 0
-                          ? '#155724'
+                          ? '#3e5ba5'
                           : status === 2
-                          ? '#721c24'
-                          : '#856404'
+                          ? '#724c50'
+                          : '#888c96'
                     }}
                   >
                     <Typography align="center">{roomState[status]}</Typography>
